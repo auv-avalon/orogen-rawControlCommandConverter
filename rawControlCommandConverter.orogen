@@ -1,0 +1,23 @@
+name "raw_control_command_converter"
+version "0.0"
+
+using_library "avalontools"
+
+import_types_from "controldev"
+
+import_types_from "base"
+
+task_context "Task" do
+
+    input_port("raw_command", "controldev/RawCommand").
+        doc("Port for raw command structures (composed of joystick and sliderbox values)")
+   
+    input_port("orientation_readings","/base/samples/RigidBodyState").
+    	doc("Orientation reading for human control")
+
+    output_port("motion_command", "base/AUVMotionCommand").
+        doc("Port for motion command structures (translation, rotation)")
+
+    port_driven
+end
+
