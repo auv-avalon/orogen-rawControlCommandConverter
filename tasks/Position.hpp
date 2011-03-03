@@ -1,20 +1,26 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef RAW_CONTROL_COMMAND_CONVERTER_TASK_TASK_HPP
-#define RAW_CONTROL_COMMAND_CONVERTER_TASK_TASK_HPP
+#ifndef RAW_CONTROL_COMMAND_CONVERTER_POSITION_TASK_HPP
+#define RAW_CONTROL_COMMAND_CONVERTER_POSITION_TASK_HPP
 
-#include "raw_control_command_converter/TaskBase.hpp"
+#include "raw_control_command_converter/PositionBase.hpp"
 
 namespace raw_control_command_converter {
-    class Task : public TaskBase
+    class Position : public PositionBase
     {
-	friend class TaskBase;
+	friend class PositionBase;
     protected:
-	base::samples::RigidBodyState orientation;	
+	base::samples::RigidBodyState pose;	
+	base::samples::RigidBodyState target_pose;
+	double target_heading;
+	bool validPose;
+
 
 
     public:
-        Task(std::string const& name = "raw_control_command_converter::Task", TaskCore::TaskState initial_state = Stopped);
+        Position(std::string const& name = "raw_control_command_converter::Position", TaskCore::TaskState initial_state = Stopped);
+
+	~Position();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -52,7 +58,7 @@ namespace raw_control_command_converter {
          * component is stopped and recover() needs to be called before starting
          * it again. Finally, FatalError cannot be recovered.
          */
-         void updateHook();
+        void updateHook();
 
         /** This hook is called by Orocos when the component is in the
          * RunTimeError state, at each activity step. See the discussion in

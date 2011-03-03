@@ -7,16 +7,30 @@ import_types_from "controldev"
 
 import_types_from "base"
 
-task_context "Task" do
+task_context "Movement" do
 
     input_port("raw_command", "controldev/RawCommand").
         doc("Port for raw command structures (composed of joystick and sliderbox values)")
    
     input_port("orientation_readings","/base/samples/RigidBodyState").
     	doc("Orientation reading for human control")
-
+    
     output_port("motion_command", "base/AUVMotionCommand").
         doc("Port for motion command structures (translation, rotation)")
+    
+    port_driven
+end
+
+task_context "Position" do
+
+    input_port("raw_command", "controldev/RawCommand").
+        doc("Port for raw command structures (composed of joystick and sliderbox values)")
+   
+    input_port("pose_samples","/base/samples/RigidBodyState").
+    	doc("Orientation reading for human control")
+
+    output_port("position_command", "base/AUVPositionCommand").
+        doc("Port for the AUV Position Command, reads from orientation input and tryes to calculate an delta position based on the joystick command")
 
     port_driven
 end
