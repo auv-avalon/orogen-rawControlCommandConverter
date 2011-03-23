@@ -62,21 +62,24 @@ void Position::updateHook()
 	//TODO Add in this block handling of AUV motion commands in AUV Coordinate System and ann Delta Depth
 	if(cmd.joyFwdBack != 0)
 		target_pose.position[0] = pose.position[0] + (cmd.joyFwdBack * 2.0);
-	if(cmd.joyFwdBack != 0)
+	if(cmd.joyLeftRight != 0)
 		target_pose.position[1] = pose.position[1] + (cmd.joyLeftRight * 2.0);
-	//if(cmd.joyFwdBack != 0)
-		target_pose.position[2] =  (cmd.joyThrottle * -2.0) ; 
 	
+	target_pose.position[2] =  0; //(cmd.joyThrottle * -2.0) ; 
+	
+	target_pose.position = pose.orientation * target_pose.position;
 	
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(pose.orientation,heading,attitude,bank);
-	if(cmd.joyRotation != 0)
-		target_heading = heading - (cmd.joyRotation * (M_PI/2.0));
+	
+	if(fabs(cmd.joyRotation) > 0.2)
+		target_heading = heading - (cmd.joyRotation * (M_PI/2.0))/5.0;
 
 	auv.x = target_pose.position[0];
 	auv.y = target_pose.position[1];
-	auv.z = target_pose.position[2];
+	auv.z = (cmd.joyThrottle * -2.0); //target_pose.position[2];
 	auv.heading = target_heading;
+	printf("Converter: Current Position is: %f,%f,%f target: %f,%f,%f heading: %f\n",pose.position[0],pose.position[1],pose.position[2],auv.x,auv.y,auv.z,target_heading);
 	_position_command.write(auv);
     	
     }

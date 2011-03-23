@@ -51,14 +51,14 @@ void Movement::updateHook()
 
     while(_raw_command.read(cmd) == RTT::NewData){
     	base::AUVMotionCommand auv;
-	auv.x_speed = cmd.joyFwdBack * 2.0;
-	auv.y_speed = cmd.joyLeftRight * 2.0;
+	auv.x_speed = cmd.joyFwdBack;
+	auv.y_speed = cmd.joyLeftRight ;
 	auv.z = cmd.joyThrottle * -2.0 ;
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
-	if(cmd.joyRotation != 0)
-		target_heading = heading - (cmd.joyRotation * (M_PI/2.0));
-	
+	if(fabs(cmd.joyRotation) > 0.2)
+		target_heading = heading - (cmd.joyRotation * (M_PI/2.0))/10.0;
+	printf("Joy Position is: %f, and current heading is: %f, target: %f\n",cmd.joyRotation,heading,target_heading);	
 	auv.heading = target_heading;
 	_motion_command.write(auv);
     	
