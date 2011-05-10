@@ -77,7 +77,7 @@ void Position::updateHook()
 
 	auv.x = target_pose.position[0];
 	auv.y = target_pose.position[1];
-	auv.z = (cmd.joyThrottle * -2.0); //target_pose.position[2];
+	auv.z = (cmd.joyThrottle * 2.0); //target_pose.position[2];
 	auv.heading = target_heading;
 	printf("Converter: Current Position is: %f,%f,%f target: %f,%f,%f heading: %f\n",pose.position[0],pose.position[1],pose.position[2],auv.x,auv.y,auv.z,target_heading);
 	_position_command.write(auv);

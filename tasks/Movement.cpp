@@ -52,8 +52,8 @@ void Movement::updateHook()
     if(_raw_command.read(cmd) != RTT::NoData){
     	base::AUVMotionCommand auv;
 	auv.x_speed = cmd.joyFwdBack;
-	auv.y_speed = cmd.joyLeftRight ;
-	auv.z = cmd.joyThrottle * -2.0 ;
+	auv.y_speed = -cmd.joyLeftRight ;
+	auv.z = cmd.joyThrottle * 2.0 ;
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
 	if(fabs(cmd.joyRotation) > 0.2)
