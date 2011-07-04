@@ -53,11 +53,11 @@ void Movement::updateHook()
     	base::AUVMotionCommand auv;
 	auv.x_speed = cmd.joyFwdBack;
 	auv.y_speed = -cmd.joyLeftRight ;
-	auv.z = cmd.joyThrottle * 2.0 ;
+	auv.z = cmd.joyThrottle * _diveScale.get() ;
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
 	if(fabs(cmd.joyRotation) > 0.2)
-		target_heading = heading - (cmd.joyRotation * (M_PI/2.0))/10.0;
+		target_heading = heading - (cmd.joyRotation * (M_PI/2.0))/_turnScale.get();
 //	printf("Joy Position is: %f, and current heading is: %f, target: %f\n",cmd.joyRotation,heading,target_heading);	
 	auv.heading = target_heading;
 	_motion_command.write(auv);
