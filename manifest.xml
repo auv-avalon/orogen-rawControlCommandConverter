@@ -1,0 +1,8 @@
+<package>
+  <description brief="Covnverter for joystick commands to avalons movement command">
+  dummy-long-desc
+  </description>
+  <author>Matthias Goldhoorn/matthias.goldhoorn@dfki.de</author>
+  <depend package="base/type" />
+  <depend package="drivers/orogen/controldev" />
+</package>
