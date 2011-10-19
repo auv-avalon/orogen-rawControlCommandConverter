@@ -3,6 +3,6 @@
   dummy-long-desc
   </description>
   <author>Matthias Goldhoorn/matthias.goldhoorn@dfki.de</author>
-  <depend package="base/type" />
+  <depend package="base/types" />
   <depend package="drivers/orogen/controldev" />
 </package>
