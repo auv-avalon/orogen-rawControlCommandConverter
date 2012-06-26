@@ -18,9 +18,13 @@ task_context "Movement" do
     output_port("motion_command", "base/AUVMotionCommand").
         doc("Port for motion command structures (translation, rotation)")
 
+    input_port("ground_distance", "base::samples::RigidBodyState").
+        doc("For doing ground following behaviour we need the distance to the ground")
+
     property('diveScale', 'double', 3.0);
     property('turnScale', 'double', 5.0);
- 
+
+    error_states "GOT_POSE_WITHOUT_DEPTH", "SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE"
 
     port_driven
 end

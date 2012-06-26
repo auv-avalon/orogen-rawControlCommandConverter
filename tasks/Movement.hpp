@@ -13,6 +13,10 @@ namespace raw_control_command_converter {
 	base::samples::RigidBodyState orientation;	
 	double target_heading;
 	bool initialized;
+        double depth;
+        double last_ground_position;
+        bool do_ground_following;
+        bool heading_updated;
 
     public:
         Movement(std::string const& name = "raw_control_command_converter::Movement", TaskCore::TaskState initial_state = Stopped);
