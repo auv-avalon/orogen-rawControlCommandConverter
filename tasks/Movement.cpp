@@ -75,7 +75,7 @@ void Movement::updateHook()
         }else if(cmd.additionalAxis[1] == 1){
             do_ground_following = false;
         }
-	if(do_ground_following){
+	if(!do_ground_following){
             auv.z = cmd.joyThrottle * _diveScale.get() ;
         }else{
             if(last_ground_position == -std::numeric_limits<double>::max()){
@@ -86,6 +86,7 @@ void Movement::updateHook()
 	
         if(fabs(cmd.joyRotation) > 0.2){
                 heading_updated=true;
+                target_heading = heading - (cmd.joyRotation * (M_PI/2.0))/_turnScale.get();
         }else if(heading_updated==true){
 		target_heading = heading;
                 heading_updated=false;
