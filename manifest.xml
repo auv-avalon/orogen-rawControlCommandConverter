@@ -6,4 +6,5 @@
   <depend package="base/types" />
   <depend package="drivers/orogen/controldev" />
   <depend package="avalon/avalontools" />
+  <tags>stable</tags>
 </package>
