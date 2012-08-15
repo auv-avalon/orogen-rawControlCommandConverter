@@ -5,4 +5,5 @@
   <author>Matthias Goldhoorn/matthias.goldhoorn@dfki.de</author>
   <depend package="base/types" />
   <depend package="drivers/orogen/controldev" />
+  <depend package="avalon/avalontools" />
 </package>
