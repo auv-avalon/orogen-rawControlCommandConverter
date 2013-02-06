@@ -66,8 +66,12 @@ void Movement::updateHook()
 
     if(_raw_command.read(cmd) != RTT::NoData){
     	base::AUVMotionCommand auv;
+        base::LinearAngular6DCommand world;
+        base::LinearAngular6DCommand aligned_velocity;
 	auv.x_speed = cmd.joyFwdBack;
+        aligned_velocity.linear(0) = cmd.joyFwdBack;
 	auv.y_speed = -cmd.joyLeftRight ;
+        aligned_velocity.linear(1) = -cmd.joyLeftRight;
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
         if(cmd.additionalAxis[1] == -1){
@@ -76,12 +80,14 @@ void Movement::updateHook()
             do_ground_following = false;
         }
 	if(!do_ground_following){
-            auv.z = cmd.joyThrottle * _diveScale.get() ;
+            auv.z = cmd.joyThrottle * _diveScale.get();
+            world.linear(2) = cmd.joyThrottle * _diveScale.get();
         }else{
             if(last_ground_position == -std::numeric_limits<double>::max()){
                 return error(SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE);
             }
             auv.z = last_ground_position + (cmd.joyThrottle * _diveScale.get()) ;
+            world.linear(2) = last_ground_position + (cmd.joyThrottle * _diveScale.get()) ;
         }
 	
         if(fabs(cmd.joyRotation) > 0.2){
@@ -92,7 +98,10 @@ void Movement::updateHook()
                 heading_updated=false;
         }
 	auv.heading = target_heading;
+	world.angular(2) = target_heading;
 	_motion_command.write(auv);
+        _world_command.write(world);
+        _aligned_velocity_command.write(aligned_velocity);
     	
     }
 }

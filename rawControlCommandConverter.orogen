@@ -6,7 +6,7 @@ using_library "avalontools"
 import_types_from "controldev"
 
 import_types_from "base"
-
+import_types_from "auv_control"
 task_context "Movement" do
 
     input_port("raw_command", "controldev/RawCommand").
@@ -17,6 +17,13 @@ task_context "Movement" do
     
     output_port("motion_command", "base/AUVMotionCommand").
         doc("Port for motion command structures (translation, rotation)")
+
+    output_port("world_command", "base::LinearAngular6DCommand")
+        doc("Port for the part of the command that is in Worldcoordinats")
+
+    output_port("aligned_velocity_command", "base::LinearAngular6DCommand")
+        doc("Port for the part of the command that ar speeds")
+        
 
     input_port("ground_distance", "base::samples::RigidBodyState").
         doc("For doing ground following behaviour we need the distance to the ground")
@@ -39,6 +46,9 @@ task_context "Position" do
 
     output_port("position_command", "base/AUVPositionCommand").
         doc("Port for the AUV Position Command, reads from orientation input and tryes to calculate an delta position based on the joystick command")
+    
+    output_port("world_command", "base::LinearAngular6DCommand")
+        doc("Port for the part of the command that is in Worldcoordinats")
 
     port_driven
 end
