@@ -97,6 +97,8 @@ void Movement::updateHook()
 		target_heading = heading;
                 heading_updated=false;
         }
+        world.angular(0) = 0;
+        world.angular(1) = 0;
 	auv.heading = target_heading;
 	world.angular(2) = target_heading;
 	_motion_command.write(auv);
