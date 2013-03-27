@@ -68,31 +68,33 @@ void Movement::updateHook()
     	base::AUVMotionCommand auv;
         base::LinearAngular6DCommand world;
         base::LinearAngular6DCommand aligned_velocity;
-	auv.x_speed = cmd.joyFwdBack;
-        aligned_velocity.linear(0) = cmd.joyFwdBack;
-	auv.y_speed = -cmd.joyLeftRight ;
-        aligned_velocity.linear(1) = -cmd.joyLeftRight;
+	auv.x_speed = cmd.axisValue[0][0];
+        aligned_velocity.linear(0) = cmd.axisValue[0][0];
+	auv.y_speed = -cmd.axisValue[0][1] ;
+        aligned_velocity.linear(1) = -cmd.axisValue[0][1];
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
-        if(cmd.additionalAxis[1] == -1){
-            do_ground_following = true;
-        }else if(cmd.additionalAxis[1] == 1){
-            do_ground_following = false;
+        if(cmd.axisValue.size() >= 3){
+            if(cmd.axisValue[2][0] == -1){
+                do_ground_following = true;
+            }else if(cmd.axisValue[2][0] == 1){
+                do_ground_following = false;
+            }
         }
 	if(!do_ground_following){
-            auv.z = cmd.joyThrottle * _diveScale.get();
-            world.linear(2) = cmd.joyThrottle * _diveScale.get();
+            auv.z = cmd.axisValue[1][0] * _diveScale.get();
+            world.linear(2) = cmd.axisValue[1][0] * _diveScale.get();
         }else{
             if(last_ground_position == -std::numeric_limits<double>::max()){
                 return error(SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE);
             }
-            auv.z = last_ground_position + (cmd.joyThrottle * _diveScale.get()) ;
-            world.linear(2) = last_ground_position + (cmd.joyThrottle * _diveScale.get()) ;
+            auv.z = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()) ;
+            world.linear(2) = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()) ;
         }
 	
-        if(fabs(cmd.joyRotation) > 0.2){
+        if(fabs(cmd.axisValue[0][2]) > 0.2){
                 heading_updated=true;
-                target_heading = heading - (cmd.joyRotation * (M_PI/2.0))/_turnScale.get();
+                target_heading = heading - (cmd.axisValue[0][2] * (M_PI/2.0))/_turnScale.get();
         }else if(heading_updated==true){
 		target_heading = heading;
                 heading_updated=false;
