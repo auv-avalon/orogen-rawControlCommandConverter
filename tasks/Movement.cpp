@@ -67,6 +67,7 @@ void Movement::updateHook()
     if(_raw_command.read(cmd) != RTT::NoData){
     	base::AUVMotionCommand auv;
         base::LinearAngular6DCommand world;
+        base::LinearAngular6DCommand world_depth;
         base::LinearAngular6DCommand aligned_velocity;
 	auv.x_speed = cmd.axisValue[0][0];
         aligned_velocity.linear(0) = cmd.axisValue[0][0];
@@ -74,14 +75,7 @@ void Movement::updateHook()
         aligned_velocity.linear(1) = -cmd.axisValue[0][1];
 	double heading,attitude,bank;
 	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
-        if(cmd.axisValue.size() >= 3){
-            if(cmd.axisValue[2][0] == -1){
-                do_ground_following = true;
-            }else if(cmd.axisValue[2][0] == 1){
-                do_ground_following = false;
-            }
-        }
-	if(!do_ground_following){
+	if(!_do_ground_following){
             auv.z = cmd.axisValue[1][0] * _diveScale.get();
             world.linear(2) = cmd.axisValue[1][0] * _diveScale.get();
         }else{
@@ -89,7 +83,7 @@ void Movement::updateHook()
                 return error(SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE);
             }
             auv.z = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()) ;
-            world.linear(2) = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()) ;
+            world_depth.linear(2) = (cmd.axisValue[1][0] * _diveScale.get());
         }
 	
         if(fabs(cmd.axisValue[0][2]) > 0.2){
@@ -105,6 +99,7 @@ void Movement::updateHook()
 	world.angular(2) = target_heading;
 	_motion_command.write(auv);
         _world_command.write(world);
+        _world_command_depth.write(world_depth);
         _aligned_velocity_command.write(aligned_velocity);
     	
     }

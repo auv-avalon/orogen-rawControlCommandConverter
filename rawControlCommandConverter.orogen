@@ -21,6 +21,9 @@ task_context "Movement" do
     output_port("world_command", "base::LinearAngular6DCommand")
         doc("Port for the part of the command that is in Worldcoordinats")
 
+    output_port("world_command_depth", "base::LinearAngular6DCommand")
+        doc("Port for the part of the command that is in Worldcoordinats")
+    
     output_port("aligned_velocity_command", "base::LinearAngular6DCommand")
         doc("Port for the part of the command that ar speeds")
         
@@ -30,6 +33,7 @@ task_context "Movement" do
 
     property('diveScale', 'double', 3.0);
     property('turnScale', 'double', 5.0);
+    property('do_ground_following', 'bool', false)
 
     error_states "GOT_POSE_WITHOUT_DEPTH", "SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE"
 
