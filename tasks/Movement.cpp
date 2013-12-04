@@ -1,7 +1,6 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Movement.cpp */
 
 #include "Movement.hpp"
-#include <avalonmath.h>
 
 using namespace raw_control_command_converter;
 
@@ -39,12 +38,9 @@ void Movement::updateHook()
 
     controldev::RawCommand cmd;
 
-    base::samples::RigidBodyState ori;
-    while(_orientation_readings.read(ori) == RTT::NewData){
-    	orientation = ori;
+    while(_orientation_readings.read(orientation) == RTT::NewData){
 	if(!initialized){
-		double heading,attitude,bank;
-		Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
+		double heading = base::getYaw(orientation.orientation);
 		target_heading = heading;
                 if(!orientation.hasValidPosition(2)){
                     return error(GOT_POSE_WITHOUT_DEPTH);
@@ -75,8 +71,7 @@ void Movement::updateHook()
         aligned_velocity.linear(0) = cmd.axisValue[0][0];
 	auv.y_speed = -cmd.axisValue[0][1] ;
         aligned_velocity.linear(1) = -cmd.axisValue[0][1];
-	double heading,attitude,bank;
-	Avalonmath::quaternionToEuler(orientation.orientation,heading,attitude,bank);
+	double heading = base::getYaw(orientation.orientation);
 	if(!_do_ground_following){
             world.linear(2) = cmd.axisValue[1][0] * _diveScale.get();
         }else{
