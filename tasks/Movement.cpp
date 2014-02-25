@@ -63,6 +63,11 @@ void Movement::updateHook()
     if(_raw_command.read(cmd) != RTT::NoData){
     	base::AUVMotionCommand auv;
 
+        double target_depth = cmd.axisValue[1][0] * _diveScale.get(); 
+        if(_delta_depth_control.get()){
+            target_depth += depth; 
+        }
+
         base::LinearAngular6DCommand world;
         world.stamp = base::Time::now();
         base::LinearAngular6DCommand world_depth;
@@ -74,14 +79,14 @@ void Movement::updateHook()
         aligned_velocity.linear(1) = -cmd.axisValue[0][1];
 	double heading = base::getYaw(orientation.orientation);
 	if(!_do_ground_following){
-            auv.z = cmd.axisValue[1][0] * _diveScale.get();
-            world.linear(2) = cmd.axisValue[1][0] * _diveScale.get();
+            auv.z = target_depth;
+            world.linear(2) = target_depth;
         }else{
-            world_depth.linear(2) = (cmd.axisValue[1][0] * _diveScale.get());
+            world_depth.linear(2) = last_ground_position + target_depth;
             if(last_ground_position == -std::numeric_limits<double>::max()){
                 return error(SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE);
             }
-            auv.z = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()) ;
+            auv.z = last_ground_position + target_depth;
         }
 	
         if(fabs(cmd.axisValue[0][2]) > 0.2){
