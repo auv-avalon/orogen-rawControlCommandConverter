@@ -39,7 +39,7 @@ task_context "Movement" do
 
     error_states "GOT_POSE_WITHOUT_DEPTH", "SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE"
 
-    port_driven
+    port_driven 'raw_command'
 end
 
 task_context "Position" do
