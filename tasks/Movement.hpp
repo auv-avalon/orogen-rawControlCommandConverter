@@ -13,6 +13,8 @@ namespace raw_control_command_converter {
 	base::samples::RigidBodyState orientation;	
 	double target_heading;
 	bool initialized;
+	double target_depth;
+	bool last_target_depth_valid;
         double depth;
         double last_ground_position;
         bool do_ground_following;

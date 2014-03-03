@@ -12,6 +12,8 @@ Movement::Movement(std::string const& name, TaskCore::TaskState initial_state)
         depth=0;
         last_ground_position = -std::numeric_limits<double>::max();
         do_ground_following = false;
+	target_depth=0;
+	last_target_depth_valid = false;
 }
 
 
@@ -65,7 +67,18 @@ void Movement::updateHook()
 
         double target_depth = cmd.axisValue[1][0] * _diveScale.get(); 
         if(_delta_depth_control.get()){
-            target_depth += depth; 
+            if(target_depth != 0.0){
+		target_depth += depth; 
+	    	this->target_depth = target_depth;
+		last_target_depth_valid=true;
+	    }else{
+		if(last_target_depth_valid){
+			target_depth = depth;
+			last_target_depth_valid=false;	
+		}else{
+			target_depth = this->target_depth;
+		}
+	    }
         }
 
         base::LinearAngular6DCommand world;
