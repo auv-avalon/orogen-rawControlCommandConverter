@@ -65,7 +65,7 @@ void Movement::updateHook()
     if(_raw_command.read(cmd) != RTT::NoData){
     	base::AUVMotionCommand auv;
 
-        double target_depth = cmd.axisValue[0][3] * _diveScale.get(); 
+        double target_depth = cmd.axisValue[0][4] * _diveScale.get(); 
         if(_delta_depth_control.get()){
             if(target_depth != 0.0){
 		target_depth += depth; 
@@ -88,10 +88,10 @@ void Movement::updateHook()
         base::LinearAngular6DCommand aligned_velocity;
 	auv.x_speed = cmd.axisValue[0][1];
         aligned_velocity.linear(0) = cmd.axisValue[0][1];
-	auv.y_speed = cmd.axisValue[0][2] ;
-        aligned_velocity.linear(1) = cmd.axisValue[0][2];
+	auv.y_speed = cmd.axisValue[0][0] ;
+        aligned_velocity.linear(1) = cmd.axisValue[0][0];
 
-	world.angular(1) = cmd.axisValue[0][0];
+	world.angular(1) = cmd.axisValue[0][2];
 	double heading = base::getYaw(orientation.orientation);
 	if(!_do_ground_following){
             auv.z = target_depth;
@@ -104,9 +104,9 @@ void Movement::updateHook()
             auv.z = last_ground_position + target_depth;
         }
 	
-        if(fabs(cmd.axisValue[0][0]) > 0.2){
+        if(fabs(cmd.axisValue[0][0]) != 0.0){
                 heading_updated=true;
-                target_heading = heading - (cmd.axisValue[0][0] * (M_PI/2.0))/_turnScale.get();
+                target_heading = heading - (-cmd.axisValue[0][0] * (M_PI/2.0))/_turnScale.get();
         }else if(heading_updated==true){
 		target_heading = heading;
                 heading_updated=false;
