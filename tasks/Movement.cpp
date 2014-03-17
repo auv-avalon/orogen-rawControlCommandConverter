@@ -42,7 +42,7 @@ void Movement::updateHook()
 	if(!initialized){
 		double heading = base::getYaw(orientation.orientation);
 		target_heading = heading;
-                if(!orientation.hasValidPosition(2)){
+                if(!orientation.hasValidPosition(2) && _do_ground_following){
                     return error(GOT_POSE_WITHOUT_DEPTH);
                 }
                 depth=orientation.position[2];
@@ -64,26 +64,35 @@ void Movement::updateHook()
     	base::AUVMotionCommand auv;
 
         base::LinearAngular6DCommand world;
-        world.stamp = base::Time::now();
+        world.time = base::Time::now();
         base::LinearAngular6DCommand world_depth;
-        world_depth.stamp = base::Time::now();
+        world_depth.time = base::Time::now();
         base::LinearAngular6DCommand aligned_velocity;
+        base::LinearAngular6DCommand acceleration;
+        //X
 	auv.x_speed = cmd.axisValue[0][0];
         aligned_velocity.linear(0) = cmd.axisValue[0][0];
+        acceleration.linear(0) = cmd.axisValue[0][0];
+        //Y
 	auv.y_speed = -cmd.axisValue[0][1] ;
         aligned_velocity.linear(1) = -cmd.axisValue[0][1];
+        acceleration.linear(1) = -cmd.axisValue[0][1];
+        
 	double heading = base::getYaw(orientation.orientation);
+        //Z        
 	if(!_do_ground_following){
-            auv.z = cmd.axisValue[1][0] * _diveScale.get();
-            world.linear(2) = cmd.axisValue[1][0] * _diveScale.get();
+            auv.z = cmd.axisValue[1][0] * _diveScale.get() + _diveScaleOffset.get();
+            world.linear(2) = cmd.axisValue[1][0] * _diveScale.get() + _diveScaleOffset.get();
         }else{
-            world_depth.linear(2) = (cmd.axisValue[1][0] * _diveScale.get());
+            world_depth.linear(2) = (cmd.axisValue[1][0] * _diveScale.get() + _diveScaleOffset.get());
             if(last_ground_position == -std::numeric_limits<double>::max()){
                 return error(SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE);
             }
-            auv.z = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()) ;
+            auv.z = last_ground_position + (cmd.axisValue[1][0] * _diveScale.get()+ _diveScaleOffset.get()) ;
         }
-	
+        acceleration.linear(2) = -cmd.axisValue[1][0];
+
+        //Yaw	
         if(fabs(cmd.axisValue[0][2]) > 0.2){
                 heading_updated=true;
                 target_heading = heading - (cmd.axisValue[0][2] * (M_PI/2.0))/_turnScale.get();
@@ -99,11 +108,15 @@ void Movement::updateHook()
             world.angular(2) -= 2*M_PI;
 	while(world.angular(2) < -M_PI)
             world.angular(2) += 2*M_PI;
+        acceleration.angular(0) = 0;
+        acceleration.angular(1) = 0;
+        acceleration.angular(2) = -cmd.axisValue[0][2];
         
         _motion_command.write(auv);
         _world_command.write(world);
         _world_command_depth.write(world_depth);
         _aligned_velocity_command.write(aligned_velocity);
+        _acceleration_command.write(acceleration);
     	
     }
 }
