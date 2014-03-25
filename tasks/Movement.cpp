@@ -88,9 +88,8 @@ void Movement::updateHook()
         base::LinearAngular6DCommand aligned_velocity;
 	auv.x_speed = cmd.axisValue[0][1];
         aligned_velocity.linear(0) = cmd.axisValue[0][1];
-	auv.y_speed = cmd.axisValue[0][0] ;
-        aligned_velocity.linear(1) = cmd.axisValue[0][0];
-
+	auv.y_speed = cmd.axisValue[0][2] ;
+        aligned_velocity.linear(1) = cmd.axisValue[0][2];
 	world.angular(1) = cmd.axisValue[0][2];
 	double heading = base::getYaw(orientation.orientation);
 	if(!_do_ground_following){
