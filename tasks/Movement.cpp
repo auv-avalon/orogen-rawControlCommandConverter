@@ -37,7 +37,11 @@ void Movement::updateHook()
     MovementBase::updateHook();
 
     controldev::RawCommand cmd;
-
+    if (!_useOrientation.get()){
+        target_heading = 0;
+        depth=0; 
+	initialized=true;
+    }
     while(_orientation_readings.read(orientation) == RTT::NewData){
 	if(!initialized){
 		double heading = base::getYaw(orientation.orientation);
@@ -111,11 +115,12 @@ void Movement::updateHook()
         acceleration.angular(0) = 0;
         acceleration.angular(1) = 0;
         acceleration.angular(2) = -cmd.axisValue[0][2];
-        
-        _motion_command.write(auv);
-        _world_command.write(world);
-        _world_command_depth.write(world_depth);
-        _aligned_velocity_command.write(aligned_velocity);
+        if (_useOrientation.get()){ 
+            _motion_command.write(auv);
+            _world_command.write(world);
+            _world_command_depth.write(world_depth);
+            _aligned_velocity_command.write(aligned_velocity);
+        }
         _acceleration_command.write(acceleration);
     	
     }

@@ -38,6 +38,7 @@ task_context "Movement" do
     property('diveScaleOffset', 'double', 0.0);
     property('turnScale', 'double', 5.0);
     property('do_ground_following', 'bool', false)
+    property('useOrientation', 'bool', false)
 
     error_states "GOT_POSE_WITHOUT_DEPTH", "SHOULD_DO_GROUND_FOLLOWING_WITHOUT_GROUND_DISTANCE"
 
