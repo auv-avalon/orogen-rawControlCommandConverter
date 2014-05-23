@@ -1,7 +1,6 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "Position.hpp"
-#include <avalonmath.h>
 
 using namespace raw_control_command_converter;
 
@@ -43,10 +42,8 @@ void Position::updateHook()
     while(_pose_samples.read(p) == RTT::NewData){
     	pose = p;
     	if(!validPose){
-		double heading,attitude,bank;
-		Avalonmath::quaternionToEuler(pose.orientation,heading,attitude,bank);
 		target_pose=p;
-		target_heading = heading;
+		target_heading = base::getYaw(pose.orientation);
 		validPose=true;
 	}
     }
@@ -70,9 +67,9 @@ void Position::updateHook()
 	
 	target_pose.position = pose.orientation * target_pose.position;
 	
-	double heading,attitude,bank;
-	Avalonmath::quaternionToEuler(pose.orientation,heading,attitude,bank);
-	
+        double heading = base::getYaw(pose.orientation);
+        
+        
 	if(fabs(cmd.axisValue[0][2]) > 0.2)
 		target_heading = heading - (cmd.axisValue[0][2] * (M_PI/2.0))/5.0;
 

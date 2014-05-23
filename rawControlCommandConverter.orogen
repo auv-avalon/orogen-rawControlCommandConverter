@@ -1,8 +1,6 @@
 name "raw_control_command_converter"
 version "0.0"
 
-using_library "avalontools"
-
 import_types_from "controldev"
 
 import_types_from "base"
