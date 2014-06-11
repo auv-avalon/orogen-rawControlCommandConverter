@@ -72,7 +72,9 @@ void Movement::updateHook()
         base::LinearAngular6DCommand world_depth;
         world_depth.time = base::Time::now();
         base::LinearAngular6DCommand aligned_velocity;
+        aligned_velocity.time = base::Time::now();
         base::LinearAngular6DCommand acceleration;
+        acceleration.time = base::Time::now();
         //X
 	auv.x_speed = cmd.axisValue[0][0];
         aligned_velocity.linear(0) = cmd.axisValue[0][0];
