@@ -91,7 +91,7 @@ void Movement::updateHook()
         aligned_velocity.linear(0) = cmd.axisValue[0][1];
 	auv.y_speed = cmd.axisValue[0][0] ;
         aligned_velocity.linear(1) = cmd.axisValue[0][0];
-	world.angular(1) = cmd.axisValue[0][0];
+	world.angular(1) = cmd.axisValue[0][5];
 	double heading = base::getYaw(orientation.orientation);
 	if(!_do_ground_following){
             auv.z = target_depth;
