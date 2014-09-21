@@ -106,7 +106,7 @@ void Movement::updateHook()
 	
         if(fabs(cmd.axisValue[0][2]) != 0.0){
                 heading_updated=true;
-                target_heading = heading - (-cmd.axisValue[0][2] * (M_PI/2.0))/_turnScale.get();
+                target_heading = heading - (-cmd.axisValue[0][2] * (M_PI/2.0))*_turnScale.get();
         }else if(heading_updated==true){
 		target_heading = heading;
                 heading_updated=false;
