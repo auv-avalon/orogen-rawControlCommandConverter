@@ -31,6 +31,7 @@ task_context "Movement" do
 
     property('diveScale', 'double', 3.0);
     property('turnScale', 'double', 5.0);
+    property('absolute_heading', 'bool', false)
     property('do_ground_following', 'bool', false)
     property('delta_depth_control', 'bool', false).
         doc("Should do delta-depth Control. Means incomming Values are interpeted as delta-targets (like speed_control)")

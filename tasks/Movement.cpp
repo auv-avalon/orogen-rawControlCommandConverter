@@ -111,6 +111,11 @@ void Movement::updateHook()
 		target_heading = heading;
                 heading_updated=false;
         }
+
+        if(_absolute_heading.get()){
+            target_heading = cmd.axisValue[0][2] * M_PI;
+        }
+
         world.angular(0) = 0;
 	auv.heading = target_heading;
 	world.angular(2) = target_heading;
