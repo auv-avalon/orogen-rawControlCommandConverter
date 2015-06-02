@@ -1,6 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Movement.cpp */
 
 #include "Movement.hpp"
+#include <base/commands/AUVMotion.hpp>
 
 using namespace raw_control_command_converter;
 
@@ -63,7 +64,7 @@ void Movement::updateHook()
     }
 
     if(_raw_command.read(cmd) != RTT::NoData){
-    	base::AUVMotionCommand auv;
+    	base::commands::AUVMotion auv;
 
         double target_depth = cmd.axisValue[0][4] * _diveScale.get(); 
         if(_delta_depth_control.get()){

@@ -1,6 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "Position.hpp"
+#include <base/commands/AUVMotion.hpp>
 
 using namespace raw_control_command_converter;
 
@@ -54,7 +55,7 @@ void Position::updateHook()
 
     while(_raw_command.read(cmd) == RTT::NewData){
 
-    	base::AUVPositionCommand auv;
+    	base::commands::AUVPosition auv;
         base::LinearAngular6DCommand world;
 
 	//TODO Add in this block handling of AUV motion commands in AUV Coordinate System and ann Delta Depth
